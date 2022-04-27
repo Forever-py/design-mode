@@ -14,10 +14,9 @@
             overflow: hidden;
             border: 10px inset pink;
             box-sizing: border-box;
+            margin-bottom: 10px;
         }
     </style>
-    <!-- <link rel="stylesheet/less" type="text/css" href="index.less" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script> -->
 </head>
 
 <body>
@@ -97,7 +96,39 @@
         imageProxy('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
     </script>
 
-    <div>duyi</div>
+    <div id="demo1"></div>
+    <button id="btn">click</button>
+    <script>
+
+        // 1、预加载 -> https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71
+        // 2、懒加载 -> 监控真正要展示的图片内容，是否又被加载成功
+        // 提高用户体验的同时，减少对性能的伤害
+        function MyImage1(_id) {
+            var oImg = document.createElement('img');
+            this.setSrc = function (_src) {
+                oImg.src = _src;
+            }
+            document.getElementById(_id).appendChild(oImg);
+        }
+
+        new MyImage1('demo1').setSrc('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
+
+        var ProxyImage = function (src) {
+            var oImg = new Image();
+            var oMyImage = new MyImage1('demo1');
+            oMyImage.setSrc('./image1.jpg');
+            oImg.onload = function () {
+                setTimeout(function () {
+                    oMyImage.setSrc(oImg.src);
+                }, 200)
+            }
+            oImg.src = src;
+        }
+
+        ProxyImage('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
+
+    </script>
+    <!-- <div>duyi</div>
     <button>add color</button>
     <button>add bg</button>
     <button>add width</button>
@@ -105,8 +136,8 @@
     <button>add fontSize</button>
     <button>add fontWeight</button>
     <script>
-        
-    </script>
+
+    </script> -->
 </body>
 
 </html>
