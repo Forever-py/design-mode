@@ -1,39 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <script>
         var deng = {
-            sendFlower : function (target) {
+            sendFlower: function (target) {
                 var flower = 'sunflower';
                 target.receiveFlower(flower);
-            } 
+            }
+        }
+
+        var userProxy = {
+            proxyFlower: function (target) {
+                this.listenMood(target, function () {
+                    deng.sendFlower(target)
+                });
+            },
+            listenMood: function (target, cb) {
+                var timer = setInterval(function () {
+                    if (target.mood) {
+                        cb();
+                        clearInterval(timer);
+                    }
+                }, 300)
+            }
         }
 
         var goddess = {
             mood: null,
-            receiveFlower : function (flower) {
+            receiveFlower: function (flower) {
                 // true 表示心情好
-                this.mood ? console.log('ok'): console.log('rejected')
+                this.mood ? console.log('ok') : console.log('rejected')
             },
             changeMood: function () {
                 this.mood = Math.random() > 0.5;
             },
             createMood: function () {
-                var self= this;
+                var self = this;
                 setInterval(function () {
                     self.changeMood();
                 }, 400)
             }
         }
         goddess.createMood();
-        deng.sendFlower(goddess);
+        // deng.sendFlower(goddess);
+        userProxy.proxyFlower(goddess)
     </script>
-    
+
 </body>
+
 </html>
