@@ -7,7 +7,33 @@
     <title>Document</title>
 </head>
 <body>
-    <p>aaa</p>
+    <script>
+        var deng = {
+            sendFlower : function (target) {
+                var flower = 'sunflower';
+                target.receiveFlower(flower);
+            } 
+        }
+
+        var goddess = {
+            mood: null,
+            receiveFlower : function (flower) {
+                // true 表示心情好
+                this.mood ? console.log('ok'): console.log('rejected')
+            },
+            changeMood: function () {
+                this.mood = Math.random() > 0.5;
+            },
+            createMood: function () {
+                var self= this;
+                setInterval(function () {
+                    self.changeMood();
+                }, 400)
+            }
+        }
+        goddess.createMood();
+        deng.sendFlower(goddess);
+    </script>
     
 </body>
 </html>
