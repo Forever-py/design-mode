@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="oBtn">按钮</button>
+    <script>
+        // function Test(name) {
+        //     // var this = Object.create(Test.prototype)
+        //     if (typeof Test.instance === 'object') {
+        //         return Test.instance;
+        //     }
+        //     this.name = name;
+        //     Test.instance = this;
+        //     // return this;
+        // }
+        // var a = new Test('one');
+        // var b = new Test();
+        // console.log(a === b);
+
+        // function Test(name) {
+        //     var instance = this;
+        //     this.name = name;
+        //     Test = function () {
+        //         return instance;
+        //     }
+        // }
+        // var a = new Test();
+        // Test.prototype.firstName='aaa';
+        // var b = new Test();
+        // console.log(a === b);
+        // console.log(a.firstName,b.firstName); // undefined, undefined
+
+        // 圣杯模式
+        // var Test = (function() {
+        //     var instance;
+        //     return function (name) {
+        //         if(typeof instance === 'object') return instance;
+        //         instance = this;
+        //         this.name = name;
+        //     }
+        // })();
+        //  var a = new Test();
+        //  Test.prototype.firstName='aaa';
+        // var b = new Test();
+        // console.log(a === b);
+        // console.log(b.firstName);
+
+        // // 创建弹出框
+        // var CreateAlert = function (text) {
+        //     var oDiv = document.createElement('div');
+        //     oDiv.style.display = 'none';
+        //     oDiv.innerText = text;
+        //     document.body.appendChild(oDiv);
+        //     return oDiv;
+        // }
+        // document.getElementById('oBtn').onclick = function () {
+        //     var oDiv = CreateAlert('aaa');
+        //     oDiv.style.display = 'block';
+        // }
+
+        // var singAlert = (function () {
+        //     var oDiv = null;
+        //     return function (text) {
+        //         if (oDiv !== null) return oDiv;
+        //         oDiv = document.createElement('div');
+        //         oDiv.style.display = 'none';
+        //         oDiv.innerText = text;
+        //         document.body.appendChild(oDiv);
+        //         return oDiv;
+        //     }
+        // })()
+
+        // document.getElementById('oBtn').onclick = function () {
+        //     var oDiv = singAlert('aaa');
+        //     oDiv.style.display = 'block';
+        // }
+
+        // 传func 返回一个新的函数
+        var getSinge = function (func) {
+            var result;
+            return function (arguments) {
+                if(!result) result= func.apply(this,arguments);
+                return result;
+            }
+        }
+        
+        // 创建弹出框
+        var CreateAlert = function (text) {
+            var oDiv = document.createElement('div');
+            oDiv.style.display = 'none';
+            oDiv.innerText = text;
+            document.body.appendChild(oDiv);
+            return oDiv;
+        }
+
+        var singAlert = getSinge(CreateAlert)
+        document.getElementById('oBtn').onclick = function () {
+            var oDiv = singAlert('aaa');
+            oDiv.style.display = 'block';
+        }
+
+    </script>
+</body>
+
+</html>
