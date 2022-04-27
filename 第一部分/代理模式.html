@@ -101,6 +101,7 @@
     <script>
 
         // 1、预加载 -> https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71
+        //      首先要在计算机性能好的时候，先发送一次，之后再用就是取缓存了
         // 2、懒加载 -> 监控真正要展示的图片内容，是否又被加载成功
         // 提高用户体验的同时，减少对性能的伤害
         function MyImage1(_id) {
@@ -113,7 +114,7 @@
 
         new MyImage1('demo1').setSrc('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
 
-        var ProxyImage = function (src) {
+        var ProxyImage = (function (src) {
             var oImg = new Image();
             var oMyImage = new MyImage1('demo1');
             oMyImage.setSrc('./image1.jpg');
@@ -122,10 +123,13 @@
                     oMyImage.setSrc(oImg.src);
                 }, 200)
             }
-            oImg.src = src;
-        }
+            return function (occupSrc,src) {
+                oImg.src = src;
+                oMyImage.setSrc(occupSrc);
+            }
+        })();
 
-        ProxyImage('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
+        ProxyImage('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71','./image3.jpg')
 
     </script>
     <!-- <div>duyi</div>
