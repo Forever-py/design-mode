@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            /* width: 100px;
+            height: 100px;
+            border: 1px solid #000; */
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        用户名：<input type="text" name="username" id="userDom">
+        <span id="showUser"></span>
+        密码：<input type="password" name="code" id="psDom">
+        <span id="showCode"></span>
+        邮箱：<input type="email" name="email" id="emDom">
+        <span id="showEmail"></span>
+        <button id="submit">提交</button>
+    </div>
+    <script src="./index.js"></script>
+    <script>
+        // 用户名不能超过4个
+        // 密码不能为空 密码长度不能低于6
+
+        // 先假定 数据是可以发送成功的
+
+        var flag = true;
+        submit.onclick = function () {
+            
+            // 最初的方式写法
+            // showUser.innerText = "";
+            // showCode.innerText = "";
+            // if(userDom.value == '') {
+            //     flag = flag;
+            //     showUser.innerText = '用户名不能为空'
+            // } else if (userDom.value.length >= 4) {
+            //     flag = false;
+            //     showUser.innerText = '用户名长度不能超过4'
+            // }
+            // if(psDom.value == '') {
+            //     flag = flag;
+            //     showCode.innerText = '密码不能为空'
+            // } else if (psDom.value.length < 6) {
+            //     flag = false;
+            //     showCode.innerText = '密码长度不能低于6'
+            // }
+
+            // if (flag) {
+            //     // 发送网络请求
+            //     Request();
+            // }
+
+            // 代理模式 和 策略模式 结合
+            ProxyRequest()
+        }
+
+        function Request() { }
+
+        var validator = new Validator();
+        validator.extend({
+            isEmail: function (value, errorMsg) {
+                if (value != "" && value.indexOf('@') == -1) {
+                    return errorMsg;
+                }
+                return true;
+            },
+            isPhone: function (value, errorMsg) {
+                if (value != "" && value.lenght != 11) {
+                    return errorMsg;
+                }
+                return true;
+            }
+        })
+        var ProxyRequest = (function () {
+
+            // 1、校验内容dom; 2、错误信息显示dom; 3、参数校验规则; 
+            validator.add(userDom, showUser, [{ strategy: 'isNoEmpty', errorMsg: '用户名不能为空' }, { strategy: 'maxLength:4', errorMsg: '用户名长度不能超过4' }])
+            validator.add(psDom, showCode, [{ strategy: 'isNoEmpty', errorMsg: '密码不能为空' }, { strategy: 'minLength:6', errorMsg: '密码长度不能小于6' }])
+            validator.add(emDom, showEmail, [{ strategy: 'isNoEmpty', errorMsg: '邮箱不能为空' }, { strategy: 'isEmail', errorMsg: '邮箱格式不正确' }])
+            return function () {
+                if (validator.start() == true) {
+                    Request();
+                }
+            }
+        })();
+    </script>
+
+</body>
+
+</html>
