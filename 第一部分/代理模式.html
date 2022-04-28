@@ -150,22 +150,46 @@
     <script>
         var oDiv = document.getElementById('show');
         var oButtonArray = document.getElementsByTagName('button');
-        for (var i = 0; i < oButtonArray.length; i++) {
-            oButtonArray[i].onclick = function () {
-                changeStyle(oDiv,this.getAttribute('type'))
+
+        var ProxyRequest = function (func) {
+            var cache = [];
+            var timer = null;
+            return function () {
+                cache.push(this.getAttribute('type'));
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    // cache
+                    func(oDiv, cache)
+                }, 2000)
             }
         }
 
-        function changeStyle (dom, type) {
+        var realChangeStyle =  ProxyRequest(changeStyle);
+        for (var i = 0; i < oButtonArray.length; i++) {
+            // oButtonArray[i].onclick = function () {
+            //     changeStyle(oDiv, this.getAttribute('type'))
+            // }
+            oButtonArray[i].onclick = realChangeStyle
+        }
+
+
+        // 改变样式
+        function changeStyle(dom, typeArr) {
             var typeObj = {
-                bg: ['backgroundColor','green'],
-                cl: ['color','blue'],
-                fs: ['fontSize','24px'],
-                fw: ['fontWeight','bold'],
-                op: ['opacity','0.2'],
+                bg: ['backgroundColor', 'green'],
+                cl: ['color', 'blue'],
+                fs: ['fontSize', '24px'],
+                fw: ['fontWeight', 'bold'],
+                op: ['opacity', '0.2'],
 
             }
-            dom.style[typeObj[type][0]] = typeObj[type][1]
+            if (typeArr.constructor == Array) {
+                typeArr.forEach(item => {
+                    dom.style[typeObj[item][0]] = typeObj[item][1]
+                })
+            } else {
+                dom.style[typeObj[typeArr][0]] = typeObj[typeArr][1]
+            }
         }
     </script>
 </body>
