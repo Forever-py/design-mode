@@ -6,6 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+
+    <style>
+        #demo {
+            width: 1200px;
+            height: 680px;
+            overflow: hidden;
+            border: 10px inset pink;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        #show {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #000;
+        }
+    </style>
 </head>
 
 <body>
@@ -54,6 +73,101 @@
         userProxy.proxyFlower(goddess)
     </script>
 
+    <div id="demo"></div>
+    <script>
+        // 图片懒加载-1
+        var MyImage = function (id) {
+            // this 
+            var oImg = new Image();
+            this.setSrc = function (src) {
+                oImg.src = src;
+            }
+            document.getElementById(id).appendChild(oImg);
+        }
+        // var oMyImg = new MyImage('demo');
+        // oMyImg.setSrc('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71');
+
+        // 利用闭包 
+        var imageProxy = (function () {
+            var oMyImg = new MyImage('demo');
+            var oNewImage = new Image();
+            oNewImage.onload = function () {
+                oMyImg.setSrc(oNewImage.src);
+            }
+            return function (src) {
+                oMyImg.setSrc('./image1.jpg');
+                oNewImage.src = src;
+
+            }
+        })()
+
+        imageProxy('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
+    </script>
+
+    <div id="demo1"></div>
+    <script>
+
+        // 1、预加载 -> https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71
+        //      首先要在计算机性能好的时候，先发送一次，之后再用就是取缓存了
+        // 2、懒加载 -> 监控真正要展示的图片内容，是否又被加载成功
+        // 提高用户体验的同时，减少对性能的伤害
+        function MyImage1(_id) {
+            var oImg = document.createElement('img');
+            this.setSrc = function (_src) {
+                oImg.src = _src;
+            }
+            document.getElementById(_id).appendChild(oImg);
+        }
+
+        new MyImage1('demo1').setSrc('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71')
+
+        var ProxyImage = (function (src) {
+            var oImg = new Image();
+            var oMyImage = new MyImage1('demo1');
+            oMyImage.setSrc('./image1.jpg');
+            oImg.onload = function () {
+                setTimeout(function () {
+                    oMyImage.setSrc(oImg.src);
+                }, 200)
+            }
+            return function (occupSrc, src) {
+                oImg.src = src;
+                oMyImage.setSrc(occupSrc);
+            }
+        })();
+
+        ProxyImage('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.jj20.com%2Fup%2Fallimg%2F1113%2F052420110515%2F200524110515-2-1200.jpg&refer=http%3A%2F%2Fimg.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1653621714&t=9ab00ff2776b65c0a72278e2b92ada71', './image3.jpg');
+    </script>
+
+    <div id="show">duyi</div>
+    <button type="cl">add color</button>
+    <button type="bg">add bg</button>
+    <!-- <button type="width">add width</button>
+    <button type="height">add height</button> -->
+    <button type="fs">add fontSize</button>
+    <button type="fw">add fontWeight</button>
+    <button type="op">add opacity</button>
+    <script>
+        var oDiv = document.getElementById('show');
+        var oButtonArray = document.getElementsByTagName('button');
+        for (var i = 0; i < oButtonArray.length; i++) {
+            oButtonArray[i].onclick = function () {
+                changeStyle(oDiv,this.getAttribute('type'))
+            }
+        }
+
+        function changeStyle (dom, type) {
+            var typeObj = {
+                bg: ['backgroundColor','green'],
+                cl: ['color','blue'],
+                fs: ['fontSize','24px'],
+                fw: ['fontWeight','bold'],
+                op: ['opacity','0.2'],
+
+            }
+            dom.style[typeObj[type][0]] = typeObj[type][1]
+        }
+    </script>
 </body>
 
 </html>
