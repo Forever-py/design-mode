@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        // 1、原始模式
+        // var smallPlane = {
+        //     width: 100, // 宽
+        //     height: 100, // 高
+        //     blood: 100, // 血量
+        //     touch: function () {
+        //         this.blood -= 50;
+        //         if (this.blood == 0) {
+        //             console.log('die');
+        //         }
+        //     }
+        // }
+
+        // 工厂模式
+        // 构造函数
+        // function SmallPlane() {
+        //     this.width = 100; // 宽
+        //     this.height = 100; // 高
+        //     this.name = "smallPlane";
+        //     this.blood = 100; // 血量
+        //     this.touch = function () {
+        //         this.blood -= 100;
+        //         if (this.blood <= 0) {
+        //             console.log('die');
+        //         }
+        //     }
+        // }
+        // function BigPlane() {
+        //     this.width = 150; // 宽
+        //     this.height = 150; // 高
+        //     this.name = "bigPlane";
+        //     this.blood = 200; // 血量
+        //     this.touch = function () {
+        //         this.blood -= 100;
+        //         if (this.blood <= 0) {
+        //             console.log('die');
+        //         }
+        //     }
+        // }
+
+
+        // function AttackPlane() {
+        //     this.width = 125; // 宽
+        //     this.height = 150; // 高
+        //     this.name = "attackPlane";
+        //     this.blood = 200; // 血量
+        //     this.touch = function () {
+        //         this.blood -= 100;
+        //         if (this.blood <= 0) {
+        //             console.log('die');
+        //         }
+        //     }
+        // }
+        // // 工厂模式
+        // function PlaneFactory(type) {
+        //     var newPlane = null;
+        //     switch (type) {
+        //         case 'SmallPlane':
+        //             newPlane = new SmallPlane()
+        //             break;
+        //         case 'BigPlane':
+        //             newPlane = new BigPlane()
+        //             break;
+        //         case 'AttackPlane':
+        //             newPlane = new AttackPlane()
+        //             break;
+        //     }
+        //     newPlane.die = function () {
+        //         console.log('boomb');
+        //     }
+        // }
+        // PlaneFactory('SmallPlane')
+
+        PlaneFactory.prototype = new Event();
+
+        // 工厂方法模式
+        function PlaneFactory() {
+            this.decorate_list = [];
+        }
+
+        PlaneFactory.prototype.decorators = {
+            eatOneLife: function (obj) {
+                obj.blood += 100;
+            },
+            eatTwoLife: function (obj) {
+                obj.blood += 200;
+            },
+            eatShrinkLife: function (obj) {
+                obj.blood -= 50;
+            }
+        }
+
+        // 搜集对某对象的装饰描述
+        PlaneFactory.prototype.decorate = function (decorator) {
+            this.decorate_list.push(decorator);
+        }
+
+        // 让装饰方法作用在该对象身上
+        PlaneFactory.prototype.update = function () {
+            for (var i = 0; i < this.decorate_list.length; i++) {
+                this.decorators[this.decorate_list[i]] && this.decorators[this.decorate_list[i]](this);
+            }
+        }
+
+        PlaneFactory.prototype.empty = function () {
+            this.decorate_list.length = 0;
+        }
+
+        PlaneFactory.prototype.remove = function (type) {
+            this.decorate_list = this.decorate_list.filter((eleType) => { return !(eleType == type) })
+        }
+
+        // 子类工厂都可以使用的公共方法 
+        PlaneFactory.prototype.touch = function () {
+            this.blood -= 50;
+            if (this.blood <= 0) {
+                this.die();
+            }
+        }
+        PlaneFactory.prototype.die = function () {
+            console.log('die')
+        }
+
+        // 创建对象的接口
+        PlaneFactory.create = function (type) {
+
+            // 判断是否存在该类型的子类工厂
+            if (PlaneFactory.prototype[type] == undefined) {
+                throw 'no this constructor';
+            }
+
+            // 继承
+            if (PlaneFactory.prototype[type].prototype.__proto__ !== PlaneFactory.prototype) {
+                PlaneFactory.prototype[type].prototype = new PlaneFactory();
+            }
+
+            var arg = [].slice.call(arguments, 1);
+            var newPlane = new PlaneFactory.prototype[type](...arg);
+            return newPlane;
+        }
+
+        // 真正定义子类工厂
+        PlaneFactory.prototype.SmallPlane = function (x, y) {
+            this.x = x;
+            this.y = y;
+            this.width = 100; // 宽
+            this.height = 100; // 高
+            this.name = "SmallPlane";
+            this.blood = 100; // 血量
+        }
+        PlaneFactory.prototype.BigPlane = function (x, y) {
+            this.x = x;
+            this.y = y;
+            this.width = 150; // 宽
+            this.height = 200; // 高
+            this.name = "BigPlane";
+            this.blood = 200; // 血量
+        }
+
+        PlaneFactory.prototype.AttackPlane = function (x, y) {
+            this.x = x;
+            this.y = y;
+            this.width = 125; // 宽
+            this.height = 140; // 高
+            this.name = "AttackPlane";
+            this.blood = 250; // 血量
+            this.attack = function () {
+                console.log('biu~ biu~ biu!')
+            }
+        }
+
+        var oAp = PlaneFactory.create('AttackPlane', 10, 20);
+        var oSp = PlaneFactory.create('SmallPlane', 20, 30);
+        var oBp = PlaneFactory.create('BigPlane', 30, 40);
+
+        // 装饰者模式
+        oAp.decorate('eatOneLife');
+        oAp.decorate('eatTwoLife');
+        oAp.update();
+
+        // Event
+        // 1、Event on emit remove once
+        // 2、有助于了解 观察者模式
+        // 3、node 模块进行会使用到 fs http
+
+
+        function Event() {
+            // 用于存储不同事件类型对应的不同处理函数
+            this.cache = {};
+        }
+
+        Event.prototype.on = function (type, handle) {
+            if (!this.cache[type]) {
+                this.cache[type] = [handle];
+            } else {
+                this.cache[type].push(handle);
+            }
+        }
+
+        Event.prototype.emit = function (type) {
+            
+            var type = arguments[0];
+            var arg = [].slice.call(arguments, 1);
+            for (var i = 0; i < this.cache[type].length; i++) {
+                this.cache[type][i].apply(this, arg);
+            }
+        }
+
+        Event.prototype.empty = function (type) {
+            // for (let key in this.cache) {
+            //     delete this.cache[key];
+            // }
+            this.cache[type] = [];
+        }
+
+        Event.prototype.remove = function (type, handle) {
+            this.cache[type] = this.cache[type].filter(function (ele) {
+                return ele != handle;
+            })
+        }
+
+        Event.prototype.once = function (type, handle) {
+
+        }
+
+        var oE = new Event();
+        function dealTime1(time) {
+            console.log('overTime1' + time)
+        }
+
+        function dealTime2(time) {
+            console.log('overTime2' + time)
+        }
+
+        oE.on('over', dealTime1)
+        oE.on('over', dealTime2)
+        oE.emit('over', '2018-09-25');
+        oE.remove('over', dealTime2)
+        oE.emit('over','second-2018-09-25');
+        
+        oAp.on('over', function () {
+            this.die();
+        })
+
+        
+    </script>
+</body>
+
+</html>
