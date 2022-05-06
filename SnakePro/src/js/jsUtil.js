@@ -1,4 +1,5 @@
 var tool = {
+    // 继承
     inherit: function (target, origin) {
         var temp = function () { };
         temp.prototype = origin.prototype;
