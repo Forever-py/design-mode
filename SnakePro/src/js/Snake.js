@@ -50,10 +50,7 @@ oSnake.init = function (ground) {
 
     // 默认方向
     this.direction = DIRECTIONENUM.RIGHT;
-
 }
-
-oSnake.init(oGround);
 
 // 策略模式
 oSnake.strategies = {
@@ -82,13 +79,15 @@ oSnake.strategies = {
             snake.tail.next = null;
         }
     },
-    eat: function () { 
-
+    eat: function (snake, square, ground) { 
+      this.move(snake, square, ground, true);
+      createFood(oGround);
+      oGame.score ++;
     },
-    die: function () { },
+    die: function () {
+        oGame.over();
+     },
 }
-
-// move
 
 // 做预判 以舌头为参考，根据自身方向 判断一下下一个碰到的方块是什么
 oSnake.move = function (ground) {
@@ -98,5 +97,3 @@ oSnake.move = function (ground) {
         this.strategies[square.touch()](oSnake, square, ground, false);
     }
 }
-
-// oSnake.move(oGround);

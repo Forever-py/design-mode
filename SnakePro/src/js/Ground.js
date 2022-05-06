@@ -21,9 +21,7 @@ oGround.init = function () {
             this.viewContent.appendChild(newSquare.viewContent);
         }
     }
-    console.log(this.SquareTable)
 }
-oGround.init();
 
 // 移除某个方块
 oGround.remove = function (x, y) {

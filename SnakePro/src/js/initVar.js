@@ -40,9 +40,9 @@ var SnakeHead = tool.single(Square); // 蛇头
 var SnakeBody = tool.extends(Square); // 蛇身体
 var Snake = tool.single(); // 蛇
 var Ground = tool.single(Square); // 场景
-// var Game = tool.single(Square); // 游戏进程
+var Game = tool.single(Square); // 游戏进程
 
-// 
+// 触及方法的枚举
 var STRATEGYMESSAGEENUM = {
     MOVE: 'move',
     EAT: 'eat',
