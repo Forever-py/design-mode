@@ -86,7 +86,7 @@ oSnake.strategies = {
     },
     die: function () {
         oGame.over();
-     },
+     }
 }
 
 // 做预判 以舌头为参考，根据自身方向 判断一下下一个碰到的方块是什么
