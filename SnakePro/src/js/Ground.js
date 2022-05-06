@@ -13,13 +13,28 @@ oGround.init = function () {
         this.SquareTable[y] = new Array(this.XLEN);
         for (var x = 0; x < XLEN; x++) {
             if (x == 0 || x == XLEN - 1 || y == 0 || y == YLEN - 1) {
-                var newSquare = SquareFactory.create('Stone', y, x, 'black');
+                var newSquare = SquareFactory.create('Stone', x, y, 'black');
             } else {
-                var newSquare = SquareFactory.create('Floor', y, x, 'orange');
+                var newSquare = SquareFactory.create('Floor', x, y, 'orange');
             }
-            this.viewContent.appendChild(newSquare.viewContent);
             this.SquareTable[y][x] = newSquare;
+            this.viewContent.appendChild(newSquare.viewContent);
         }
     }
+    console.log(this.SquareTable)
 }
 oGround.init();
+
+// 移除某个方块
+oGround.remove = function (x, y) {
+    // 视觉上把div移除
+    this.viewContent.removeChild(this.SquareTable[y][x].viewContent);
+    // 数据移除
+    this.SquareTable[y][x] = null;
+}
+
+// 添加某个方块
+oGround.append = function (square) {
+    this.viewContent.appendChild(square.viewContent);
+    this.SquareTable[square.y][square.x] = square;
+}
